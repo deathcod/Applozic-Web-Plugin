@@ -3691,6 +3691,8 @@ var MCK_CLIENT_GROUP_MAP = [];
                                 var ht  = "<div onclick=\"location.href=\'"+URL[1]+"\';\" style='cursor: pointer; max-width: 181px' class='"+floatWhere+"'>";
                                 if(image)
                                 {
+                                    if(image.charAt(0)=='/')
+                                        image = URL[1]+image;
                                     ht += "<div style='height:101.812px; width: 181px'><img src='"+image+"' alt class='img' style='height:101.812px; width: 181px'></div>";
                                 }
                                 if(site_name || title || description)
