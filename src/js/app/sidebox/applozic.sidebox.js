@@ -3661,6 +3661,38 @@ var MCK_CLIENT_GROUP_MAP = [];
                         emoji_template = msg_text;
                     }
                 }
+                var URL = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g.exec(emoji_template);
+                if (URL) {
+                    $.ajax({
+                        type: 'get',
+                        url: URL[1],
+                        contentType: 'text/plain',
+                        success: function(data){
+                            var site_name = /og:site_name" content="([^\"]+)?"/.exec(data)[1];
+                            var title = /og:title" content="([^\"]+)?"/.exec(data)[1];
+                            var image = /og:image" content="([^\"]+)?"/.exec(data)[1];
+                            var description = /og:description" content="([^\"]+)?"/.exec(data)[1];
+                            if(site_name || title || image || description)
+                            {
+                                var ht  = "<div onclick=\"location.href=\'"+URL[1]+"\';\" style='cursor: pointer; max-width: 181px' class='"+floatWhere+"'>";
+                                if(image)
+                                {
+                                    ht += "<div style='height:101.812px; width: 181px'><img src='"+image+"' alt class='img' style='height:101.812px; width: 181px'></div>";
+                                }
+                                if(site_name || title || description)
+                                {
+                                    ht += "<div style='height:60.812px; width: 181px'>";
+                                    ht += (title)?"<b>"+((title.length>60)?title.substring(0,60)+"...":title)+"</b><br>":'';
+                                    ht += (description)?((description.length>20)?description.substring(0,20)+"...":description)+"<br>":'';
+                                    ht += (site_name)?"<p style='font-size:10px'>"+site_name+"</p>":'';
+                                    ht += "</div>"
+                                }
+                                ht += "</div>";
+                                $textMessage.append(ht);
+                            }
+                        }   
+                    });
+                }
                 if (msg.conversationId) {
                     var conversationPxy = MCK_CONVERSATION_MAP[msg.conversationId];
                     if (typeof conversationPxy !== 'object') {
