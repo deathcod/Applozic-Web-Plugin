@@ -3668,10 +3668,24 @@ var MCK_CLIENT_GROUP_MAP = [];
                         url: URL[1],
                         contentType: 'text/plain',
                         success: function(data){
-                            var site_name = /og:site_name" content="([^\"]+)?"/.exec(data)[1];
-                            var title = /og:title" content="([^\"]+)?"/.exec(data)[1];
-                            var image = /og:image" content="([^\"]+)?"/.exec(data)[1];
-                            var description = /og:description" content="([^\"]+)?"/.exec(data)[1];
+                            var meta = data.match(/(<meta [^>]+?>)/g);
+                            var name = [/(title)/, /(image)/, /(description)/];
+                            var value = ['', '', ''];
+                            for (var i = 0; i < name.length; i++) 
+                            {
+                                for (var j = 0; j < meta.length; j++) 
+                                {
+                                    if(name[i].test(meta[j]))
+                                    {
+                                        value[i] = /content="([^\"]+)?"/.exec(meta[j])[1];
+                                        break;
+                                    }
+                                }
+                            }
+                            var site_name = /\/\/(?:www.)?([^.]+)?./.exec(URL[1])[1];
+                            var title = value[0];
+                            var image = value[1];
+                            var description = value[2];
                             if(site_name || title || image || description)
                             {
                                 var ht  = "<div onclick=\"location.href=\'"+URL[1]+"\';\" style='cursor: pointer; max-width: 181px' class='"+floatWhere+"'>";
